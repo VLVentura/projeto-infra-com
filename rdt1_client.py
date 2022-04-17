@@ -1,5 +1,12 @@
 #!/usr/bin/env python3
 import udp_imports as udp
+def rdt_send(data :str):
+    pkt = udp.Packet("null", 12,udp.SERVER_PORT)
+    udt_send(make_pkt(pkt, data.encode()))
+    msg_rcv, server_address = udp.CONN.recvfrom(2048)
+    print(f"This was sent by {server_address}: {msg_rcv}")
+    udp.CONN.close()
+    return
 def make_pkt(pkt :udp.Packet,data :bytes)->udp.Packet:
     pkt.data = data
     return pkt
