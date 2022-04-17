@@ -8,7 +8,6 @@ def rdt_send(data :str):
     msg_rcv, server_address = udp.CONN.recvfrom(2048)
     print(f"This was sent by {server_address}: {msg_rcv}")
     udp.CONN.close()
-    return
 
 def make_pkt(pkt :udp.Packet,data :bytes)->udp.Packet:
     pkt.data = data
@@ -16,7 +15,6 @@ def make_pkt(pkt :udp.Packet,data :bytes)->udp.Packet:
 
 def udt_send(pkt :udp.Packet):
     udp.CONN.sendto(pkt.data, (udp.SERVER_NAME,udp.SERVER_PORT))
-    return
 
 if __name__ == "__main__":
     rdt_send(input("MESSAGE: "))
