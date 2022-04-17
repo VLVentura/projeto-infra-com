@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 import udp_imports as udp
+
+# State wait for call from above
 def rdt_send(data :str):
     pkt = udp.Packet("null", 12,udp.SERVER_PORT)
     udt_send(make_pkt(pkt, data.encode()))
@@ -7,11 +9,14 @@ def rdt_send(data :str):
     print(f"This was sent by {server_address}: {msg_rcv}")
     udp.CONN.close()
     return
+
 def make_pkt(pkt :udp.Packet,data :bytes)->udp.Packet:
     pkt.data = data
     return pkt
+
 def udt_send(pkt :udp.Packet):
     udp.CONN.sendto(pkt.data, (udp.SERVER_NAME,udp.SERVER_PORT))
     return
+
 if __name__ == "__main__":
     rdt_send(input("MESSAGE: "))
