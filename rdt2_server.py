@@ -6,9 +6,11 @@ def rdt_server_loop():
     udp.CONN.bind(("",udp.SERVER_PORT))
     print(f"Server is listening on port: {udp.SERVER_PORT}")
     while True:
-        pkt, client_address = udp.CONN.recvfrom(2048)
+        rcvpkt_data, client_address = udp.CONN.recvfrom(2048)
         print(f"Connection stablished with {client_address}")
-        rdt_rcv(pkt,client_address);
+        sndpkt = rdt_rcv(rcvpkt_data)
+        sndpkt.dest_port = client_address[1]
+        udp.udt_send(sndpkt)
 
 def dataIntegrity(data: bytes)->bool:
    sent_message, message_checksum = udp.parse_package(data)
