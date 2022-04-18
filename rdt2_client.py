@@ -18,8 +18,12 @@ def rdt_send(data :str):
 
     udt_send(make_pkt(newpkt, data,checksum))
 
-def udt_send(pkt :udp.Packet):
-    udp.CONN.sendto(pkt.data, (udp.SERVER_NAME,udp.SERVER_PORT))
+    # State wait for ACK or NAK
+    msg_rcv, server_address = udp.CONN.recvfrom(2048)
+    print(f"This was sent by {server_address}: {udp.parse_package(msg_rcv)[0]}")
+    while (udp.dataIntegrity(msg_rcv) and isNACK) is True or isACK is False:
+        udt_send(make_pkt(newpkt, data, checksum))
+    udp.CONN.close()
 
 if __name__ == "__main__":
     rdt_send(input("MESSAGE: "))
