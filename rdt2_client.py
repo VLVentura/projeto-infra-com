@@ -16,9 +16,7 @@ def rdt_send(data :str):
     newpkt = udp.Packet("null", udp.CLIENT_PORT,udp.SERVER_PORT, "00000000")
     checksum = udp.checksum([data])
 
-def make_pkt(pkt :udp.Packet,data :bytes)->udp.Packet:
-    pkt.data = data
-    return pkt
+    udt_send(make_pkt(newpkt, data,checksum))
 
 def udt_send(pkt :udp.Packet):
     udp.CONN.sendto(pkt.data, (udp.SERVER_NAME,udp.SERVER_PORT))
