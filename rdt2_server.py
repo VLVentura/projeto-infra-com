@@ -11,8 +11,17 @@ def rdt_server_loop():
         rdt_rcv(pkt,client_address);
 
 
-def rdt_rcv(pkt :bytes,client_add):
-    deliver_data(extract(pkt),client_add)
+def rdt_rcv(rcvpkt_data :bytes)->udp.Packet:
+    rcvpkt_status = dataIntegrity(rcvpkt_data)
+    sndpkt = udp.Packet("null",udp.SERVER_PORT,udp.CLIENT_PORT,"00000000")
+    if rcvpkt_status is True:
+        deliver_data(extract(rcvpkt_data))
+        sndpkt = udp.make_pkt(sndpkt,"1",udp.checksum(["1"]))
+        # We assum an ACK
+    else:
+        sndpkt = udp.make_pkt(sndpkt,"0",udp.checksum(["0"]))
+        # We assume a NACK
+    return sndpkt
 
 def extract(pkt :bytes)->str:
     return pkt.decode()
