@@ -33,16 +33,21 @@ def wait_for_call(data :str, seq :int)->udp.Packet:
     udt_send(sndpkt)
     return sndpkt
 def rdt_send(data :str):
-    newpkt = udp.Packet("null", udp.CLIENT_PORT,udp.SERVER_PORT, "00000000")
-    checksum = udp.checksum([data])
+    #State wait for call0 from above
+    sndpkt0 = wait_for_call(data, 0)
+    msg_rcv0, server_address = udp.CONN.recvfrom(2048)
+    print(f"This was sent by {server_address}: {udp.parse_package(msg_rcv0)[0]}")
 
-    udt_send(make_pkt(newpkt, data,checksum))
+    #State wait ACK or NAK 0
+    wait_for_acknoewldgemnt(msg_rcv0,sndpkt0)
 
-    # State wait for ACK or NAK
-    msg_rcv, server_address = udp.CONN.recvfrom(2048)
-    print(f"This was sent by {server_address}: {udp.parse_package(msg_rcv)[0]}")
-    while (udp.dataIntegrity(msg_rcv) and isNACK) is True or isACK is False:
-        udt_send(make_pkt(newpkt, data, checksum))
+    #State wait for call1 from above
+    sndpkt1 = wait_for_call(data, 1)
+    msg_rcv1, server_address = udp.CONN.recvfrom(2048)
+    print(f"This was sent by {server_address}: {udp.parse_package(msg_rcv1)[0]}")
+
+    # State ACK or NAK 1
+    wait_for_acknoewldgemnt(msg_rcv1,sndpkt1)
     udp.CONN.close()
 
 if __name__ == "__main__":
