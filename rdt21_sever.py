@@ -26,6 +26,7 @@ def rdt_server_loop():
 
         deliver_data(extract(rcvpkt_data))
         send_ACK(cl_address, 1)
+
 def send_NACK(cl_address, seq :int):
     sndpkt = udp.Packet("0",4,udp.SERVER_PORT,udp.SERVER_PORT,seq,"")
     sndpkt.dest_port = cl_address[1]
@@ -41,7 +42,6 @@ def send_ACK(cl_address, seq :int):
 def dataIntegrity(data: bytes)->bool:
    sent_message, message_checksum = udp.parse_package(data)
    return message_checksum == udp.checksum([sent_message])
-
 
 def extract(pkt :bytes)->str:
     return pkt.decode()
