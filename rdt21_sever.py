@@ -17,6 +17,12 @@ def send_NACK(cl_address, seq :int):
     chksum = udp.compute_chksum(sndpkt)
     udp.udt_send(udp.make_pkt(sndpkt, chksum))
 
+def send_ACK(cl_address, seq :int):
+    sndpkt = udp.Packet("1",4,udp.SERVER_PORT,udp.SERVER_PORT,seq,"")
+    sndpkt.dest_port = cl_address[1]
+    chksum = udp.compute_chksum(sndpkt)
+    udp.udt_send(udp.make_pkt(sndpkt, chksum))
+
 def dataIntegrity(data: bytes)->bool:
    sent_message, message_checksum = udp.parse_package(data)
    return message_checksum == udp.checksum([sent_message])
