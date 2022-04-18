@@ -27,17 +27,6 @@ def dataIntegrity(data: bytes)->bool:
    sent_message, message_checksum = udp.parse_package(data)
    return message_checksum == udp.checksum([sent_message])
 
-def rdt_rcv(rcvpkt_data :bytes)->udp.Packet:
-    rcvpkt_status = dataIntegrity(rcvpkt_data)
-    sndpkt = udp.Packet("null",udp.SERVER_PORT,udp.CLIENT_PORT,"00000000")
-    if rcvpkt_status is True:
-        deliver_data(extract(rcvpkt_data))
-        sndpkt = udp.make_pkt(sndpkt,"1",udp.checksum(["1"]))
-        # We assum an ACK
-    else:
-        sndpkt = udp.make_pkt(sndpkt,"0",udp.checksum(["0"]))
-        # We assume a NACK
-    return sndpkt
 
 def extract(pkt :bytes)->str:
     return pkt.decode()
