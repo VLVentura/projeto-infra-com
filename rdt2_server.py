@@ -26,9 +26,8 @@ def rdt_rcv(rcvpkt_data :bytes)->udp.Packet:
 def extract(pkt :bytes)->str:
     return pkt.decode()
 
-def deliver_data(data :str, client_add):
-    print(f"This was yous message from {client_add}: {data}")
-    udp.CONN.sendto(data.encode(),client_add)
+def deliver_data(data :str):
+    print(f"MESSAGE RECEIVED {data}")
 
 if __name__ == "__main__":
     rdt_server_loop()
