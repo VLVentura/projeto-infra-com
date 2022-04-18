@@ -19,6 +19,9 @@ def isACK(rcvpkt_data :bytes) -> bool:
     return udp.parse_package(rcvpkt_data) == "1"
 
 # State wait for call from above
+def compute_chksum(pkt :udp.Packet) -> str:
+    data_to_checksum = compose(pkt)
+    return udp.checksum([data_to_checksum])
 def rdt_send(data :str):
     newpkt = udp.Packet("null", udp.CLIENT_PORT,udp.SERVER_PORT, "00000000")
     checksum = udp.checksum([data])
