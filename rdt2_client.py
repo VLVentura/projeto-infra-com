@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 import udp_imports as udp
 
+def make_pkt(sndpkt :udp.Packet,data :str, checksum :str)->udp.Packet:
+    sndpkt.data = (data + "\x01" + checksum).encode()
+    return sndpkt
 # State wait for call from above
 def rdt_send(data :str):
     pkt = udp.Packet("null", udp.CLIENT_PORT,udp.SERVER_PORT)
