@@ -10,6 +10,9 @@ def rdt_server_loop():
         print(f"Connection stablished with {client_address}")
         rdt_rcv(pkt,client_address);
 
+def dataIntegrity(data: bytes)->bool:
+   sent_message, message_checksum = udp.parse_package(data)
+   return message_checksum == udp.checksum([sent_message])
 
 def rdt_rcv(rcvpkt_data :bytes)->udp.Packet:
     rcvpkt_status = dataIntegrity(rcvpkt_data)
