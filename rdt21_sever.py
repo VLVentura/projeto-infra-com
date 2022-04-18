@@ -8,9 +8,24 @@ def rdt_server_loop():
     while True:
         rcvpkt_data, client_address = udp.CONN.recvfrom(2048)
         print(f"Connection stablished with {client_address}")
-        sndpkt = rdt_rcv(rcvpkt_data)
-        sndpkt.dest_port = client_address[1]
-        udp.udt_send(sndpkt)
+
+        while dataIntegrity(rcvpkt_data) is False:
+            send_NACK(client_address, 0)
+            rcvpkt_data, cl_address= udp.CONN.recvfrom(2048)
+            print(f"Connection stablished with {client_address}")
+
+        deliver_data(extract(rcvpkt_data))
+        send_ACK(client_address, 0)
+        rcvpkt_data, cl_address = udp.CONN.recvfrom(2048)
+        print(f"Connection stablished with {client_address}")
+
+        while dataIntegrity(rcvpkt_data) is False:
+            send_NACK(cl_address, 1)
+            rcvpkt_data, cl_address= udp.CONN.recvfrom(2048)
+            print(f"Connection stablished with {client_address}")
+
+        deliver_data(extract(rcvpkt_data))
+        send_ACK(cl_address, 1)
 def send_NACK(cl_address, seq :int):
     sndpkt = udp.Packet("0",4,udp.SERVER_PORT,udp.SERVER_PORT,seq,"")
     sndpkt.dest_port = cl_address[1]
