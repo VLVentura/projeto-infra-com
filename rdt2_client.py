@@ -13,11 +13,8 @@ def isACK(rcvpkt_data :bytes) -> bool:
     return udp.parse_package(rcvpkt_data) == "1"
 # State wait for call from above
 def rdt_send(data :str):
-    pkt = udp.Packet("null", udp.CLIENT_PORT,udp.SERVER_PORT)
-    udt_send(make_pkt(pkt, data.encode()))
-    msg_rcv, server_address = udp.CONN.recvfrom(2048)
-    print(f"This was sent by {server_address}: {msg_rcv}")
-    udp.CONN.close()
+    newpkt = udp.Packet("null", udp.CLIENT_PORT,udp.SERVER_PORT, "00000000")
+    checksum = udp.checksum([data])
 
 def make_pkt(pkt :udp.Packet,data :bytes)->udp.Packet:
     pkt.data = data
