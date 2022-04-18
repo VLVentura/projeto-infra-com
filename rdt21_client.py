@@ -26,6 +26,12 @@ def wait_for_acknoewldgemnt(rcvpkt: bytes, pkt :udp.Packet):
     while (udp.dataIntegrity(rcvpkt) or isNACK(rcvpkt)):
         print("INVALID MESSAGE RECEIVED")
         udt_send(make_pkt(pkt,pkt.checksum))
+def wait_for_call(data :str, seq :int)->udp.Packet:
+    pkt = udp.Packet(data, 4,udp.CLIENT_PORT,udp.SERVER_PORT,seq, "")
+    chksum = compute_chksum(pkt)
+    sndpkt = make_pkt(pkt, chksum)
+    udt_send(sndpkt)
+    return sndpkt
 def rdt_send(data :str):
     newpkt = udp.Packet("null", udp.CLIENT_PORT,udp.SERVER_PORT, "00000000")
     checksum = udp.checksum([data])
