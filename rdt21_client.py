@@ -22,6 +22,10 @@ def isACK(rcvpkt_data :bytes) -> bool:
 def compute_chksum(pkt :udp.Packet) -> str:
     data_to_checksum = compose(pkt)
     return udp.checksum([data_to_checksum])
+def wait_for_acknoewldgemnt(rcvpkt: bytes, pkt :udp.Packet):
+    while (udp.dataIntegrity(rcvpkt) or isNACK(rcvpkt)):
+        print("INVALID MESSAGE RECEIVED")
+        udt_send(make_pkt(pkt,pkt.checksum))
 def rdt_send(data :str):
     newpkt = udp.Packet("null", udp.CLIENT_PORT,udp.SERVER_PORT, "00000000")
     checksum = udp.checksum([data])
