@@ -3,7 +3,7 @@ import udp_imports as udp
 
 # State wait for call from above
 def rdt_send(data :str):
-    pkt = udp.Packet("null", 12,udp.SERVER_PORT)
+    pkt = udp.Packet("null", udp.CLIENT_PORT,udp.SERVER_PORT)
     udt_send(make_pkt(pkt, data.encode()))
     msg_rcv, server_address = udp.CONN.recvfrom(2048)
     print(f"This was sent by {server_address}: {msg_rcv}")
