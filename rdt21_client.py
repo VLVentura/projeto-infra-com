@@ -1,9 +1,13 @@
 #!/usr/bin/env python3
 import udp_imports as udp
 
-def make_pkt(sndpkt :udp.Packet,data :str, checksum :str)->udp.Packet:
-    sndpkt.data = (data + "\x01" + checksum).encode()
-    return sndpkt
+def make_pkt(pkt :udp.Packet,chksum :str)->udp.Packet:
+    pkt.data = (compose(pkt) + "\x01" + chksum).encode()
+    # add all attributes to data, data becomes type bytes
+    return pkt
+
+def compose(pkt: udp.Packet):
+            return str(pkt.data)+str(pkt.length)+str( pkt.src_port)+str( pkt.dest_port)+str( pkt.seq )
 
 def udt_send(sndpkt :udp.Packet):
     udp.CONN.sendto(sndpkt.data, (udp.SERVER_HOST,sndpkt.dest_port))
