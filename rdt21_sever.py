@@ -41,7 +41,7 @@ def send_ACK(cl_address, seq :int):
 
 def dataIntegrity(data: bytes)->bool:
    sent_message, message_checksum = udp.parse_package(data)
-   return message_checksum == udp.checksum([sent_message])
+   return message_checksum == udp.checksum(sent_message)
 
 def extract(pkt :bytes)->str:
     return pkt.decode()
