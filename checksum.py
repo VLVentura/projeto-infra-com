@@ -7,8 +7,8 @@ def padding(messages) -> bytearray:
     return newArr
 def str_to_binary(messages: list) -> list:
     binary_messages = []
-    for message in messages:
-        binary_messages.append("".join(format(i, "08b") for i in bytearray(message, encoding="utf-8")))
+    for i in range(len(messages)):
+        binary_messages.append("".join(format(padding(messages[i]), "08b")))
     return binary_messages
 
 
