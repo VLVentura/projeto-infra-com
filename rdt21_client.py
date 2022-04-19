@@ -2,12 +2,18 @@
 import udp_imports as udp
 
 def make_pkt(pkt :udp.Packet,chksum :str)->udp.Packet:
-    pkt.data = (compose(pkt) + "\x01" + chksum).encode()
+    pkt.data = ( str([str(x) for x in compose(pkt)]) + "\x01" + chksum).encode()
     # add all attributes to data, data becomes type bytes
     return pkt
 
 def compose(pkt: udp.Packet):
-            return str(pkt.data)+str(pkt.length)+str( pkt.src_port)+str( pkt.dest_port)+str( pkt.seq )
+    composeARR = []
+    composeARR.append(str(pkt.data))
+    composeARR.append(pkt.length)
+    composeARR.append(pkt.src_port)
+    composeARR.append(pkt.dest_port)
+    composeARR.append(pkt.seq )
+    return composeARR
 
 def udt_send(sndpkt :udp.Packet):
     udp.CONN.sendto(sndpkt.data, (udp.SERVER_HOST,sndpkt.dest_port))
@@ -20,7 +26,7 @@ def isACK(rcvpkt_data :bytes) -> bool:
 
 def compute_chksum(pkt :udp.Packet) -> str:
     data_to_checksum = compose(pkt)
-    return udp.checksum([data_to_checksum])
+    return udp.checksum(data_to_checksum)
 
 def wait_for_acknoewldgemnt(rcvpkt: bytes, pkt :udp.Packet):
     while (udp.dataIntegrity(rcvpkt) or isNACK(rcvpkt)):
