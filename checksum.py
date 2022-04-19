@@ -1,3 +1,4 @@
+
 def padding(messages) -> bytearray:
     tempARR = []
     paddingArr = bytearray(str(messages),encoding="utf-8")
@@ -5,12 +6,12 @@ def padding(messages) -> bytearray:
     tempARR.insert(0,bytearray(str("0"*((-len(paddingArr))%16)),encoding="utf-8")) #add padding to data
     newArr = bytearray(tempARR[0]) + bytearray(tempARR[1])
     return newArr
+
 def str_to_binary(messages: list) -> list:
     binary_messages = []
     for i in range(len(messages)):
         binary_messages.append("".join(format(padding(messages[i]), "08b")))
     return binary_messages
-
 
 def checksum(message: list) -> str:
     var = str_to_binary(message)
