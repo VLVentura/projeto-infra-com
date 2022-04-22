@@ -8,9 +8,13 @@ class Integrity(rdt):
         pass
 
     def corrupt(self, rcvpkt :bytes):
+
         return
 
-    def isACK(self, rcvpkt :bytes, seqNum :int):
+    def isACK0(self, rcvpkt :bytes, seqNum :int):
+        return
+
+    def isACK1(self, rcvpkt :bytes, segNum :int):
         return
 
     def timeout(self):
