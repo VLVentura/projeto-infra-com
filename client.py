@@ -13,7 +13,7 @@ class Client:
         self.__start_connection()
         self.__start_client()
 
-    def __start_connection(self) -> socket:
+    def __start_connection(self):
         self.__conn = socket(AF_INET, SOCK_DGRAM)
         self.__conn.settimeout(self.__timeout)
         self.__conn.bind(("", 0))
