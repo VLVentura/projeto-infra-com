@@ -27,10 +27,6 @@ class Server:
             # self.__rdt.send(client_address, data)
 
 
-def parse_package(message: bytes) -> tuple:
-    return message.decode().split("\x01")
-
-
 if __name__ == "__main__":
     server = Server("localhost", 12000)
     server.run()
