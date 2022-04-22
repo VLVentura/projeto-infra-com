@@ -1,35 +1,31 @@
 from socket import socket, AF_INET, SOCK_DGRAM
-from checksum import checksum
+from rdt import Rdt
 
 
-def get_package(message: str) -> bytes:
-    msg_to_send = message + "\x01" + checksum([message])
-    return msg_to_send.encode()
+class Client:
+    def __init__(self, server_address: str, server_port: int, timeout: int = 10):
+        self.__server_info = (server_address, server_port)
+        self.__timeout = timeout
+        self.__conn = None
+        self.__rdt = None
 
+    def run(self):
+        self.__start_connection()
+        self.__start_client()
 
-def send_valid_checksum(conn: socket):
-    message = input("Valid checksum - Enter text: ")
-    conn.sendto(get_package(message), (server_name, server_port))
+    def __start_connection(self) -> socket:
+        self.__conn = socket(AF_INET, SOCK_DGRAM)
+        self.__conn.settimeout(self.__timeout)
+        self.__conn.bind(("", 0))
+        self.__rdt = Rdt(self.__conn)
 
-
-def send_not_valid_checksum(conn: socket):
-    message = input("Not valid checksum - Enter text: ")
-    msg_to_send = message + "\x01" + "100011010100101010"
-    conn.sendto(msg_to_send.encode(), (server_name, server_port))
+    def __start_client(self):
+        while True:
+            self.__rdt.send(self.__server_info, "Hello World - 1")
+            # sleep(1)
+            # self.__rdt.send(self.__server_info, "Hello World - 2")
 
 
 if __name__ == "__main__":
-    server_name = "localhost"
-    server_port = 12000
-    conn = socket(AF_INET, SOCK_DGRAM)
-
-    for i in range(2):
-        if i == 0:
-            send_valid_checksum(conn)
-        else:
-            send_not_valid_checksum(conn)
-
-        msg_received, server_address = conn.recvfrom(2048)
-        print(f"Message recieved from {server_address}: {msg_received.decode()}")
-
-    conn.close()
+    client = Client("localhost", 12000, 2)
+    client.run()

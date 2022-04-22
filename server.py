@@ -1,8 +1,30 @@
 from socket import socket, AF_INET, SOCK_DGRAM
-from checksum import checksum
+from rdt import Rdt
 
-ERROR_MESSAGE = "Checksum is not equal."
-SUCCESS_MESSAGE = "Checksum is equal."
+
+class Server:
+    def __init__(self, address: str, port: int):
+        self.__address = address
+        self.__port = port
+        self.__conn = None
+        self.__rdt = None
+
+    def run(self):
+        self.__start_connection()
+        self.__start_server()
+
+    def __start_connection(self) -> socket:
+        self.__conn = socket(AF_INET, SOCK_DGRAM)
+        self.__conn.bind((self.__address, self.__port))
+        self.__rdt = Rdt(self.__conn)
+
+    def __start_server(self):
+        print(f"Server is listening on port: {self.__port}")
+
+        while True:
+            data, client_address = self.__rdt.recv()
+            print(data)
+            # self.__rdt.send(client_address, data)
 
 
 def parse_package(message: bytes) -> tuple:
@@ -10,20 +32,5 @@ def parse_package(message: bytes) -> tuple:
 
 
 if __name__ == "__main__":
-    server_port = 12000
-    conn = socket(AF_INET, SOCK_DGRAM)
-    conn.bind(("", server_port))
-
-    print(f"Server is listening on port: {server_port}")
-    while True:
-        package, client_address = conn.recvfrom(2048)
-        client_message, message_checksum = parse_package(package)
-        print(f"Message recieved from {client_address}")
-
-        msg_to_send = ""
-        if message_checksum == checksum([client_message]):
-            msg_to_send = SUCCESS_MESSAGE
-        else:
-            msg_to_send = ERROR_MESSAGE
-
-        conn.sendto(msg_to_send.encode(), client_address)
+    server = Server("localhost", 12000)
+    server.run()
