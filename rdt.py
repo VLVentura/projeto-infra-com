@@ -11,7 +11,7 @@ class rdt:
         """  Send segmentthrough UDP"""
         pass
 
-    def rcv(self, rcvpkt :bytes):
+    def rcv(self):
         """ Receive segment"""
         pass
 
