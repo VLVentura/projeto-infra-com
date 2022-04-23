@@ -6,10 +6,8 @@ class Manipulation(rdt):
         self.rcvpkt = rcvpkt
         pass
 
-    @staticmethod
-    def extract(rcvpkt :bytes):
-        return rcvpkt.decode().split('\x01')
+    def extract(self):
+        return self.rcvpkt.decode().split('\x01')
 
-    def deliver_data(self, data :str):
-        pass
-
+    def deliver_data(self):
+        return print("RECEIVED")
