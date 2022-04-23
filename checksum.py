@@ -27,7 +27,8 @@ class Checksum:
                 else:
                         return bytearray(b'000000000000000')
 
-        def sum_bytes(self)->bytearray:
-            actual_sum = self.chksum[0];
-            [actual_sum := Checksum.overflow(actual_sum, x) + bytearray(actual_sum + x)for x in self.chksum[1:]]
+        @staticmethod
+        def sum_bytes(arr)->bytearray:
+            actual_sum = arr.chksum[0];
+            [actual_sum := Checksum.overflow(actual_sum, x) + bytearray(actual_sum + x)for x in arr.chksum[1:]]
             return actual_sum
