@@ -48,3 +48,5 @@ def server_start():
     while True:
         print(f'LISTENING TO REQUESTS in: {SERVER_PORT}')
         server_wait_for_0_from_below(server)
+if __name__ == "__main__":
+    server_start()
