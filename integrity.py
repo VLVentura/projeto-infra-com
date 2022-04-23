@@ -2,9 +2,6 @@
 
 from manipulation import Manipulation
 from rdt import rdt
-import struct
-import socket
-import Msg_functions
 from checksum import Checksum
    
 class Integrity(rdt):
@@ -20,7 +17,7 @@ class Integrity(rdt):
 
     def isACK1(self, rcvpkt :bytes, seqNum :int):
         extracted_data = Manipulation.extract(rcvpkt) # return data and seqnum
-        return (extracted_data[0:-2] == 'ACK' and seqNum == 0)
+        return (extracted_data[0:-2] == 'ACK' and seqNum == 1)
 
     def notcorrupt(self ,rcvpkt :bytes):
         return Checksum.sum_bytes(rcvpkt) == rcvpkt[0:15]
