@@ -3,21 +3,22 @@ from packet import Packet
 import copy
 
 class Checksum:
-        def __init__(self, segment :Packet, target=bytearray(15)):
-            self.segment = segment
+        def __init__(self, packet :Packet, target=bytearray(15)):
+            self.Packet = packet
+            self.chksum = []
             self.target = target
             self.binArr = []
 
         def calc_checksum(self):
             Checksum.str_list2bin(self)
-            map(lambda x: bytearray(x + b'1'), self.segment.segment)
-            return self.segment.segment
+            self.chksum = Checksum.sum_bytes(self)
+            map(lambda x: bytearray(x + 1)[0], self.chksum)
+            return self.chksum
 
         def str_list2bin(self):
-            new_segment = copy.deepcopy(self.segment)
-            map(lambda x: bytearray(x, 'utf-8'), new_segment.segment) #HACK this is very hacky
-            self.segment = new_segment
-            pass
+            self.binArr = copy.deepcopy(self.Packet)
+            map(lambda x: bytearray(x, 'utf-8'), self.binArr.segment) #HACK this is very hacky
+            self.chksum = self.binArr.segment
 
         @staticmethod
         def overflow(actsum, arr)->bytearray:
@@ -27,10 +28,6 @@ class Checksum:
                         return bytearray(b'000000000000000')
 
         def sum_bytes(self)->bytearray:
-            actual_sum = self.segment;
-            [actual_sum := Checksum.overflow(actual_sum, x) + bytearray(actual_sum + x )for x in self.segment.segment[1:]]
+            actual_sum = self.chksum[0];
+            [actual_sum := Checksum.overflow(actual_sum, x) + bytearray(actual_sum + x)for x in self.chksum[1:]]
             return actual_sum
-
-        @staticmethod
-        def verify_bytes(pkt,target)->bool:
-                pkt
