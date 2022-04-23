@@ -17,15 +17,15 @@ class rdt:
 
     #interface for integrity class
 
-    def corrupt(self, rcvpkt :bytes)-> bool:
+    def corrupt(self, rcvpkt :bytes):
         """ Check if segment received is corrupted"""
         pass
 
-    def isACK(self, rcvpkt :bytes, seqNum :int) -> bool:
+    def isACK0(self, rcvpkt :bytes, seqNum :int):
         """ Check if segment has ACK as data value"""
         pass
 
-    def timeout(self) -> bool:
+    def timeout(self):
         """ Check if the actual timer has excedeed"""
         pass
 
@@ -33,7 +33,7 @@ class rdt:
         """ Start a timer"""
         pass
 
-    def notcorrupt(self ,rcvpkt :bytes) -> bool:
+    def notcorrupt(self ,rcvpkt :bytes):
         """ Check if the segment received has not been corrupted"""
         pass
 
@@ -41,11 +41,11 @@ class rdt:
         """ Actual timer has been stopped"""
         pass
 
-    def has_seq0(self, rcvpkt :bytes) -> bool:
+    def has_seq0(self, rcvpkt :bytes):
         """ Check if segment has sequence number 0"""
         pass
 
-    def has_seq1(self, rcvpkt :bytes) -> bool:
+    def has_seq1(self, rcvpkt :bytes):
         """ Check if segment has sequence number 1"""
         pass
 
