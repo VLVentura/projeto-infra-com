@@ -5,22 +5,25 @@ from _typeshed import Self
 
 class Packet:
     def __init__(self) -> None:
-        self.data = ""
-        self.length = 0
+        self.length = 25
         self.segnum = -1
         self.src_port = 0000
         self.dest_port = 0000
         self.checksum = 000000000000000
         self.segment = []
+        self.divider = '\x01'
+        self.data = ""
         pass
 
     def compose(self) -> None:
         """ Aggregate attributes in segment list"""
-        self.segment.append(str(self.data))
+        self.segment.append(str(self.checksum))
         self.segment.append(str(self.length))
         self.segment.append(str(self.src_port))
         self.segment.append(str(self.dest_port))
-        self.segment.append(str(self.checksum))
+        self.segment.append(str(self.divider))
+        self.segment.append(str(self.data))
+        self.segment.append(str(self.segnum))
 
     def set_header(self ,length, seg_num ,src_port, dest_port, checksum) -> None:
         """ Set the header for this segment"""
