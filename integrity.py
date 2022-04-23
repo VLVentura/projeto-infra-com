@@ -16,11 +16,11 @@ class Integrity(rdt):
 
     def isACK0(self, rcvpkt :bytes, seqNum :int):
         extracted_data = Manipulation.extract(rcvpkt)
-        return extracted_data[0:-2] == 'ACK'
+        return (extracted_data[0:-2] == 'ACK' and seqNum == 0)
 
-    def isACK1(self, rcvpkt :bytes, segNum :int):
+    def isACK1(self, rcvpkt :bytes, seqNum :int):
         extracted_data = Manipulation.extract(rcvpkt) # return data and seqnum
-        return extracted_data[0:-2] == 'ACK'
+        return (extracted_data[0:-2] == 'ACK' and seqNum == 0)
 
     def notcorrupt(self ,rcvpkt :bytes):
         return Checksum.sum_bytes(rcvpkt) == rcvpkt[0:15]
