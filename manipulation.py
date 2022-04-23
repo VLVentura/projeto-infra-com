@@ -6,8 +6,9 @@ class Manipulation(rdt):
         self.rcvpkt = rcvpkt
         pass
 
-    def extract(self, rcvpkt :bytes, data :str):
-        return self.rcvpkt.decode().split("\x01")
+    @staticmethod
+    def extract(rcvpkt :bytes):
+        return rcvpkt.decode().split('\x01')
 
     def deliver_data(self, data :str):
         pass
