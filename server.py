@@ -2,8 +2,10 @@
 from manipulation import Manipulation
 from integrity import Integrity
 from transfer import Transfer
+
 SERVER_PORT = 12000
 SERVER_NAME = "localhost"
+
 def server_wait_for_0_from_below(server):
     rcvpkt, address = Transfer.rcv(server)
     newIntegrityCheck = Integrity()
@@ -23,6 +25,7 @@ def server_wait_for_0_from_below(server):
             Transfer.set_segnum(server, 0)
             Transfer.send(server, "ACK")
             server_wait_for_1_from_below(server)
+
 def server_wait_for_1_from_below(server):
     rcvpkt, address = Transfer.rcv(server)
     newIntegrityCheck = Integrity()
@@ -42,11 +45,13 @@ def server_wait_for_1_from_below(server):
             Transfer.set_segnum(server, 1)
             Transfer.send(server, "ACK")
             server_wait_for_0_from_below(server)
+
 def server_start():
     server = Transfer(server_port=SERVER_PORT,server_name=SERVER_NAME)
     server.bind_socket()
     while True:
         print(f'LISTENING TO REQUESTS in: {SERVER_PORT}')
         server_wait_for_0_from_below(server)
+
 if __name__ == "__main__":
     server_start()
