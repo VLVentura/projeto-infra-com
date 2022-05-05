@@ -1,31 +1,22 @@
+<<<<<<< HEAD
 from socket import socket, AF_INET, SOCK_DGRAM
+=======
+#!/usr/bin/env python3
+>>>>>>> rdt3/server
 from rdt import Rdt
 
 
 class Server:
     def __init__(self, address: str, port: int):
-        self.__address = address
         self.__port = port
-        self.__conn = None
-        self.__rdt = None
+        self.__conn = Rdt.create_server_connection(address, port)
 
     def run(self):
-        self.__start_connection()
-        self.__start_server()
-
-    def __start_connection(self) -> socket:
-        self.__conn = socket(AF_INET, SOCK_DGRAM)
-        self.__conn.bind((self.__address, self.__port))
-        self.__rdt = Rdt(self.__conn)
-
-    def __start_server(self):
         print(f"Server is listening on port: {self.__port}")
 
         while True:
-            data, client_address = self.__rdt.recv()
-            print(data)
-            # self.__rdt.send(client_address, data)
-
+            data, client_address = self.__conn.recv()
+            print(f"Msg received from: {client_address}: {data}")
 
 if __name__ == "__main__":
     server = Server("localhost", 12000)
