@@ -1,7 +1,11 @@
 import json
 
+from checksum import Checksum
+
 
 class Packet:
+    ACK = "ACK"
+
     def __init__(
         self,
         seq_num: int = 0,
@@ -88,3 +92,11 @@ class Packet:
 
     def parse_from_bytes(self, rcvpkt: bytes) -> None:
         self.__packet = json.loads(rcvpkt)
+
+    @staticmethod
+    def make_ack(seq_num: int, src_port: int, dest_port: int) -> "Packet":
+        data = Packet.ACK
+        # TODO: (FIX) - Checksum
+        # ack_packet = Packet(seq_num, Checksum.calc(data), src_port, dest_port, len(data), data)
+        ack_packet = Packet(seq_num, bytearray(15), src_port, dest_port, len(data), data)
+        return ack_packet
