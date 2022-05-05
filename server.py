@@ -1,29 +1,20 @@
-from socket import socket, AF_INET, SOCK_DGRAM
-from checksum import checksum
-
-ERROR_MESSAGE = "Checksum is not equal."
-SUCCESS_MESSAGE = "Checksum is equal."
+#!/usr/bin/env python3
+from rdt import Rdt
 
 
-def parse_package(message: bytes) -> tuple:
-    return message.decode().split("\x01")
+class Server:
+    def __init__(self, address: str, port: int):
+        self.__port = port
+        self.__conn = Rdt.create_server_connection(address, port)
+
+    def run(self):
+        print(f"Server is listening on port: {self.__port}")
+
+        while True:
+            data, client_address = self.__conn.recv()
+            print(f"Msg received from: {client_address}: {data}")
 
 
 if __name__ == "__main__":
-    server_port = 12000
-    conn = socket(AF_INET, SOCK_DGRAM)
-    conn.bind(("", server_port))
-
-    print(f"Server is listening on port: {server_port}")
-    while True:
-        package, client_address = conn.recvfrom(2048)
-        client_message, message_checksum = parse_package(package)
-        print(f"Message recieved from {client_address}")
-
-        msg_to_send = ""
-        if message_checksum == checksum([client_message]):
-            msg_to_send = SUCCESS_MESSAGE
-        else:
-            msg_to_send = ERROR_MESSAGE
-
-        conn.sendto(msg_to_send.encode(), client_address)
+    server = Server("localhost", 12000)
+    server.run()
