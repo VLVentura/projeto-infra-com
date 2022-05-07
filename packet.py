@@ -77,6 +77,16 @@ class Packet:
     def payload(self, payload: str):
         self.__packet["payload"] = payload
 
+    @property
+    def header(self) -> list:
+        """List - [0]: seq_num, [1]: checksum, [2]: src_port, [3]: dest_port, [4]: length"""
+        seq_num = str(self.__packet["header"]["seq_num"]).encode()
+        checksum = self.__packet["header"]["checksum"].encode()
+        src_port = str(self.__packet["header"]["src_port"]).encode()
+        dest_port = str(self.__packet["header"]["dest_port"]).encode()
+        length = str(self.__packet["header"]["length"]).encode()
+        return [seq_num, checksum, src_port, dest_port, length]
+
     def set_header(self, seq_num: int, checksum: bytearray(15), src_port: int, dest_port: int, length: int) -> None:
         self.__packet["header"]["seq_num"] = seq_num
         self.__packet["header"]["checksum"] = bytes(checksum).decode("utf-8")
