@@ -3,19 +3,22 @@ from socket import socket, AF_INET, SOCK_DGRAM, timeout
 from checksum import Checksum
 from packet import Packet
 from rdt_fsm import RdtFSM
+from seq_num_table import SeqNumTable
 
 
 class Rdt:
     def __init__(self, address: str = None, port: int = None, server_info: "tuple[str, str]" = None, timeout: int = 10):
         self.__conn = socket(AF_INET, SOCK_DGRAM)
         self.__timeout = timeout
-        self.__recv_seq = 0
+        self.__recv_seq_table = SeqNumTable()
         self.__send_seq = 0
-        bind_info = (address, port)
+        self.__server_info = None
 
+        bind_info = (address, port)
         if server_info is not None:
             self.__server_info = server_info
             bind_info = ("", 0)
+
         self.__conn.bind(bind_info)
 
     @staticmethod
@@ -45,28 +48,35 @@ class Rdt:
 
         while run:
             rcvpkt, addr = self.__conn.recvfrom(2048)
+            if not self.__recv_seq_table.contains(addr):
+                self.__recv_seq_table.add_address(addr)
+
             packet.parse_from_bytes(rcvpkt)
             seq_num = -1
 
-            if RdtFSM.r0(packet, self.__recv_seq):
+            if RdtFSM.r0(packet, self.__recv_seq_table.get_seq_num(addr)):
                 run = False
                 data = packet.payload
                 seq_num = 0
-            elif RdtFSM.r1(packet, self.__recv_seq):
+            elif RdtFSM.r1(packet, self.__recv_seq_table.get_seq_num(addr)):
                 seq_num = 0
-            elif RdtFSM.r2(packet, self.__recv_seq):
+            elif RdtFSM.r2(packet, self.__recv_seq_table.get_seq_num(addr)):
                 run = False
                 data = packet.payload
                 seq_num = 1
-            elif RdtFSM.r3(packet, self.__recv_seq):
+            elif RdtFSM.r3(packet, self.__recv_seq_table.get_seq_num(addr)):
                 seq_num = 1
 
             packet = Packet.make_ack(seq_num, self.__conn.getsockname()[1], addr[1])
             self.__udt_send(packet.serialize(), addr)
             if run is False:
-                self.__recv_seq = 0 if self.__recv_seq == 1 else 1
+                self.__recv_seq_table.update_seq_num(addr)
 
         return (data, addr)
+
+    def reset_state_from(self, addr: "tuple[str, str]"):
+        if self.__server_info is None:
+            self.__recv_seq_table.remove_address(addr)
 
     def __udt_send(self, sndpkt: bytes, addr: "tuple[str, str]"):
         self.__conn.sendto(sndpkt, addr)
