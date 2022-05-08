@@ -8,10 +8,6 @@ class Checksum:
         final_byte = reduce(Checksum.inv,byte[2]).encode('utf-8')
         return final_byte
 
-    @staticmethod
-    def __str_list2bin(data: str) -> list:
-        map(lambda x: bytearray(x, "utf-8"), data)
-        return data
 
     @staticmethod
     def __sum_bytes(arr: list) -> bytearray:
