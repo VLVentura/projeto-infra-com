@@ -2,11 +2,11 @@ from functools import reduce
 import sys
 class Checksum:
     @staticmethod
-    def calc(data: str):
-        chksum = Checksum.__str_list2bin(data)
-        chksum = Checksum.__sum_bytes(chksum)
-        map(lambda x: bytearray(x + 1)[0], chksum)
-        return chksum
+    def calc(data: list[bytearray])->bytes:
+        num_arr = [(int.from_bytes(data[x],byteorder=sys.byteorder)) for x in range(len(data))]
+        byte = bin(reduce(Checksum.__sum_bytes,num_arr))
+        final_byte = reduce(Checksum.inv,byte[2]).encode('utf-8')
+        return final_byte
 
     @staticmethod
     def __str_list2bin(data: str) -> list:
