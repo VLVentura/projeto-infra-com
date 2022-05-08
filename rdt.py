@@ -29,11 +29,12 @@ class Rdt:
         return rdt
 
     def send(self, data: str, addr: "tuple[str, str]" = None):
-        # TODO: (FIX) - Checksum
-        # chksum = Checksum.calc(data)
         addr = addr if addr is not None else self.__server_info
         sndpkt = Packet(seq_num=self.__send_seq)
         sndpkt.payload = data
+        sndpkt_encoded = sndpkt.header;
+        # TODO: (FIX) - Checksum
+        sndpkt.checksum = Checksum.calc(sndpkt_encoded)
         self.__udt_send(sndpkt.serialize(), addr)
         self.__wait_for_ack(sndpkt, addr)
         self.__send_seq = 0 if self.__send_seq == 1 else 1
