@@ -33,7 +33,6 @@ class Rdt:
         sndpkt = Packet(seq_num=self.__send_seq)
         sndpkt.payload = data
         sndpkt_encoded = sndpkt.header;
-        # TODO: (FIX) - Checksum
         sndpkt.checksum = Checksum.calc(sndpkt_encoded)
         self.__udt_send(sndpkt.serialize(), addr)
         self.__wait_for_ack(sndpkt, addr)
