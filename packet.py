@@ -78,7 +78,7 @@ class Packet:
         self.__packet["payload"] = payload
 
     @property
-    def header(self) -> list:
+    def header(self) -> list[bytes]:
         """List - [0]: seq_num, [1]: checksum, [2]: src_port, [3]: dest_port, [4]: length"""
         seq_num = str(self.__packet["header"]["seq_num"]).encode()
         checksum = self.__packet["header"]["checksum"].encode()

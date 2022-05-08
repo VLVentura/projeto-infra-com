@@ -14,8 +14,9 @@ class Checksum:
         return acc + act
 
     @staticmethod
-    def __overflow(actsum, arr) -> bytearray:
-        if bytearray(actsum, arr)[16] == 1:
-            return bytearray(b"000000000000001")
-        else:
-            return bytearray(b"000000000000000")
+    def inv(acc:str, act:str):
+        if act == '1':
+            acc =  acc + '0'
+        elif act == '0':
+            acc = acc + '1'
+        return acc
