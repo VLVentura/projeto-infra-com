@@ -1,3 +1,5 @@
+from functools import reduce
+import sys
 class Checksum:
     @staticmethod
     def calc(data: str):
