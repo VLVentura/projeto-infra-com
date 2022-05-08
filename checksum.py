@@ -10,10 +10,8 @@ class Checksum:
 
 
     @staticmethod
-    def __sum_bytes(arr: list) -> bytearray:
-        actual_sum = arr[0]
-        [actual_sum := Checksum.__overflow(actual_sum, x) + bytearray(actual_sum + x) for x in arr[1:]]
-        return actual_sum
+    def __sum_bytes(acc:int,act:int):
+        return acc + act
 
     @staticmethod
     def __overflow(actsum, arr) -> bytearray:
